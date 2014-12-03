@@ -1,0 +1,48 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * module_auto_update
+#
+# Translators:
+# OCA Transbot <transbot@odoo-community.org>, 2017
+# Quentin THEURET <odoo@kerpeo.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-04 02:55+0000\n"
+"PO-Revision-Date: 2017-08-04 02:55+0000\n"
+"Last-Translator: Quentin THEURET <odoo@kerpeo.com>, 2017\n"
+"Language-Team: French (https://www.transifex.com/oca/teams/23907/fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: module_auto_update
+#: model:ir.model,name:module_auto_update.model_ir_module_module
+msgid "Module"
+msgstr "Module"
+
+#~ msgid "Checksum dir"
+#~ msgstr "Rép. de checksum"
+
+#~ msgid "Checksum installed"
+#~ msgstr "Checksum installé"
+
+#~ msgid "Module Upgrade"
+#~ msgstr "Mise à jour de module(s)"
+
+#~ msgid "Modules"
+#~ msgstr "Modules"
+
+#~ msgid "Open Updates and Update Apps List Server Action"
+#~ msgstr ""
+#~ "Ouvrir les mises à jour et l'action serveur de la liste des mises à jour "
+#~ "des applications"
+
+#~ msgid "Scheduled Upgrades"
+#~ msgstr "Mises à jour planifiées"
+
+#~ msgid "Updates"
+#~ msgstr "Mises à jour"

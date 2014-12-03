@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_audit" name="Audit"
+            parent="base.menu_reporting" sequence="50"
+            groups="base.group_system"/>
+
+
+        <!-- auditlog.rule -->
+
+        <record model="ir.ui.view" id="view_auditlog_rule_form">
+            <field name="name">auditlog.rule.form</field>
+            <field name="model">auditlog.rule</field>
+            <field name="arch" type="xml">
+                <form string="Rule">
+                    <header>
+                        <button string="Subscribe" name="subscribe"
+                            type="object" states="draft" class="oe_highlight"/>
+                        <button string="Unsubscribe" name="unsubscribe"
+                            type="object" states="subscribed"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group string="Rule">
+                            <group colspan="1">
+                                <field name="name" required="1"/>
+                                <field name="model_id"/>
+                                <field name="log_type"/>
+                                <field name="action_id" readonly="1" groups="base.group_no_one"/>
+                            </group>
+                            <group colspan="1">
+                                <field name="log_read"/>
+                                <field name="log_write"/>
+                                <field name="log_unlink"/>
+                                <field name="log_create"/>
+                                <field name="log_custom_method"/>
+                                <!--<field name="log_action"/>-->
+                                <!--<field name="log_workflow"/>-->
+                            </group>
+                        </group>
+                        <group string="Custom Methods" attrs="{'invisible': [('log_custom_method', '=', False)]}">
+                            <group colspan="2">
+                                <div attrs="{'invisible': [('log_custom_method', '=', False)]}" colspan="2">
+                                    You can only edit custom methods when the rule is unsubscribed.
+                                </div>
+                                <field name="custom_method_ids" nolabel="1" attrs="{'readonly': [('state', '=', 'subscribed')]}" colspan="2">
+                                    <tree string="Custom Methods" editable="top">
+                                        <field name="name"/>
+                                        <field name="message"/>
+                                        <field name="use_active_ids"/>
+                                        <field name="context_field_number"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+                        <!--
+                        <group string="Users">
+                            <field name="user_ids" nolabel="1"/>
+                        </group>
+                        -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_auditlog_rule_tree">
+            <field name="name">auditlog.rule.tree</field>
+            <field name="model">auditlog.rule</field>
+            <field name="arch" type="xml">
+                <tree colors="blue:state == 'draft';black:state == 'subscribed'" string="Rules">
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="log_type"/>
+                    <field name="log_read"/>
+                    <field name="log_write"/>
+                    <field name="log_unlink"/>
+                    <field name="log_create"/>
+                    <field name="log_custom_method"/>
+                    <!--<field name="log_action"/>-->
+                    <!--<field name="log_workflow"/>-->
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_auditlog_rule_search" model="ir.ui.view">
+            <field name="name">auditlog.rule.search</field>
+            <field name="model">auditlog.rule</field>
+            <field name="arch" type="xml">
+                <search string="Rules">
+                    <field name="name"/>
+                    <filter name="state_draft"
+                        domain="[('state','=','draft')]" string="Draft"/>
+                    <filter name="state_subscribed"
+                        domain="[('state','=','subscribed')]" string="Subscribed"/>
+                    <field name="model_id"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_by_state" string="State"
+                            domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_auditlog_rule_tree">
+            <field name="name">Rules</field>
+            <field name="res_model">auditlog.rule</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_auditlog_rule_search"/>
+        </record>
+
+        <menuitem id="menu_action_auditlog_rule_tree" parent="menu_audit" action="action_auditlog_rule_tree"/>
+
+
+        <!-- auditlog.log -->
+
+        <record model="ir.ui.view" id="view_auditlog_log_form">
+            <field name="name">auditlog.log.form</field>
+            <field name="model">auditlog.log</field>
+            <field name="arch" type="xml">
+                <form string="Log">
+                    <sheet>
+                        <group string="Log">
+                            <group colspan="1">
+                                <field name="create_date" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                                <field name="method" readonly="1"/>
+                                <field name="log_type" readonly="1"/>
+                            </group>
+                            <group colspan="1">
+                                <field name="model_id" readonly="1"/>
+                                <field name="model_name" attrs="{'invisible': [('model_id', '!=', False)]}"/>
+                                <field name="model_model" attrs="{'invisible': [('model_id', '!=', False)]}"/>
+                                <field name="res_id" readonly="1"/>
+                                <field name="name" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="HTTP Context">
+                            <field name="http_session_id"/>
+                            <field name="http_request_id"/>
+                        </group>
+                        <group string="Fields updated">
+                            <field name="line_ids" readonly="1" nolabel="1">
+                                <form string="Log - Field updated">
+                                    <group>
+                                        <field name="field_id" readonly="1"/>
+                                        <field name="field_name" attrs="{'invisible': [('field_id', '!=', False)]}"/>
+                                    </group>
+                                    <group string="Values" col="4">
+                                        <field name="old_value" readonly="1"/>
+                                        <field name="new_value" readonly="1"/>
+                                        <field name="old_value_text" readonly="1"/>
+                                        <field name="new_value_text" readonly="1"/>
+                                    </group>
+                                </form>
+                                <tree>
+                                    <field name="field_description"/>
+                                    <!--<field name="old_value"/>-->
+                                    <field name="old_value_text"/>
+                                    <!--<field name="new_value"/>-->
+                                    <field name="new_value_text"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_auditlog_log_tree">
+            <field name="name">auditlog.log.tree</field>
+            <field name="model">auditlog.log</field>
+            <field name="arch" type="xml">
+                <tree string="Logs" create="false">
+                    <field name="create_date"/>
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="res_id"/>
+                    <field name="method"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+       <record id="view_auditlog_log_search" model="ir.ui.view">
+            <field name="name">auditlog.log.search</field>
+            <field name="model">auditlog.log</field>
+            <field name="arch" type="xml">
+                <search string="Logs">
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="res_id"/>
+                    <field name="user_id"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_by_user_id"
+                            string="User"
+                            domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter name="group_by_model_id"
+                            string="Model"
+                            domain="[]" context="{'group_by':'model_id'}"/>
+                        <filter name="group_by_res_id"
+                            string="Resource ID"
+                            domain="[]" context="{'group_by':'res_id'}"/>
+                        <filter name="group_by_create_date"
+                            string="Date"
+                            domain="[]" context="{'group_by':'create_date'}"/>
+                        <filter name="group_by_http_session"
+                            string="User session"
+                            domain="[]" context="{'group_by':'http_session_id'}"/>
+                        <filter name="group_by_http_request"
+                            string="HTTP Request"
+                            domain="[]" context="{'group_by':'http_request_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <template id="view_auditlog_log_qweb">
+            <t t-call="report.internal_layout">
+                <div class="page">
+                    <table class="table">
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Object</th>
+                            <th>Change</th>
+                        </tr>
+                        <tr t-foreach="docs" t-as="doc">
+                            <td><span t-field="doc.create_date" /></td>
+                            <td t-esc="doc.user_id.display_name" />
+                            <td>
+                                <span t-esc="doc.model_id.name" />:
+                                <t t-if="doc.model_id.model in doc.env.registry">
+                                    <span t-esc="doc.env[doc.model_id.model].search([('id', '=', doc.res_id)]).display_name or '%s,%d' % (doc.model_id.model, doc.res_id)" />
+                                </t>
+                                <t t-if="doc.model_id.model not in doc.env.registry">
+                                    <span t-esc="'%s,%d' % (doc.model_id.model, doc.res_id)" />
+                                </t>
+                            </td>
+                            <td>
+                                <table class="table-striped table-condensed">
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Change</th>
+                                    </tr>
+                                    <tr t-foreach="doc.line_ids" t-as="line">
+                                        <td t-esc="line.field_description or line.field_id.field_name" />
+                                        <t t-if="line.field_id.ttype not in ['one2many', 'many2many']">
+                                            <td><span t-esc="line.old_value_text"/> &#x2192; <span t-esc="line.new_value_text" /></td>
+                                        </t>
+                                        <t t-if="line.field_id.ttype in ['one2many', 'many2many']">
+                                            <t t-set="old" t-value="line._parse_set('old_value_text') or line._parse_set('old_value')" />
+                                            <t t-set="new" t-value="line._parse_set('new_value_text') or line._parse_set('new_value')" />
+                                            <t t-set="added" t-value="new - old" />
+                                            <t t-set="removed" t-value="old - new" />
+                                            <td>
+                                                <div t-if="added">
+                                                    Added <span t-esc="added" />
+                                                </div>
+                                                <div t-if="removed">
+                                                    Removed <span t-esc="removed" />
+                                                </div>
+                                                <t t-if="not added and not removed">
+                                                    No change
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+        <report id="report_auditlog_log"
+            string="Print log"
+            menu="True"
+            model="auditlog.log"
+            report_type="qweb-pdf"
+            name="auditlog.view_auditlog_log_qweb"
+            multi="True"
+        />
+
+        <record model="ir.actions.act_window" id="action_auditlog_log_tree">
+            <field name="name">Logs</field>
+            <field name="res_model">auditlog.log</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_auditlog_log_search"/>
+        </record>
+
+        <menuitem id="menu_audit_logs" name="Logs"
+            parent="menu_audit" action="action_auditlog_log_tree"/>
+
+    </data>
+</openerp>

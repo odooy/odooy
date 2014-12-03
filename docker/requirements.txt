@@ -1,0 +1,11 @@
+  pstats_print2list
+  python-ldap
+  unidecode==1.2.0
+  validate_email
+  pysftp
+  acme_tiny
+  IPy
+  python-json-logger
+  odoorpc
+  raven
+  pyotp<2.4

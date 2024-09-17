@@ -1,2 +1,2 @@
-# Openy (OpenERP + YAML)
-Unleashing Your OpenERP’s Automation with YAML
+# Odooy (Odoo + YAML)
+Unleashing Your Odoo’s Automation with YAML
